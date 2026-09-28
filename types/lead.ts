@@ -6,4 +6,6 @@ export interface Lead {
   budget: string;
   buyingTimeline: string;
   customerMessage: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

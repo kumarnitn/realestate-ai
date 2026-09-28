@@ -1,3 +1,27 @@
+# RealEstate AI Lead Copilot
+
+## Phase 3 — Database
+
+The application uses Supabase PostgreSQL for persistent lead storage.
+
+Lead submission flow:
+
+Browser
+→ Next.js API route
+→ Supabase PostgreSQL
+
+The AI analysis layer has not yet been implemented.
+
+### Setup Instructions
+
+1. Create a Supabase project.
+2. Create the `leads` table using the migration in `supabase/migrations/001_create_leads.sql`.
+3. Create `.env.local` by copying `.env.example`.
+4. Add your Supabase credentials to `.env.local` (`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`).
+5. Run `npm run dev`.
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
