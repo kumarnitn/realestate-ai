@@ -10,6 +10,8 @@ interface PriorityAlignedListProps {
   selectedLeadId?: string | null;
   onSelectLeadForChat: (leadId: string, customPrompt?: string) => void;
   onOpenAddPropertyModal?: (prefill?: Partial<Property>) => void;
+  onAnalyzeLead?: (id: string) => void;
+  analyzingLeadId?: string | null;
 }
 
 export default function PriorityAlignedList({
@@ -18,6 +20,8 @@ export default function PriorityAlignedList({
   selectedLeadId,
   onSelectLeadForChat,
   onOpenAddPropertyModal,
+  onAnalyzeLead,
+  analyzingLeadId,
 }: PriorityAlignedListProps) {
   const [priorityFilter, setPriorityFilter] = useState<'ALL' | 'HOT' | 'WARM' | 'COLD' | 'MATCHED_ONLY'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -268,13 +272,36 @@ export default function PriorityAlignedList({
                       )}
                     </div>
 
-                    <div className="pt-2 flex items-center gap-2">
+                    <div className="pt-2 flex items-center gap-2 flex-wrap">
                       <Link
                         href={`/leads/${lead.id}`}
                         className="text-xs text-slate-600 hover:text-slate-900 font-semibold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 transition"
                       >
                         Lead Details →
                       </Link>
+
+                      {lead.analysisStatus === 'pending' && onAnalyzeLead && (
+                        <button
+                          onClick={() => onAnalyzeLead(lead.id)}
+                          disabled={analyzingLeadId === lead.id}
+                          className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition flex items-center gap-1 shadow-2xs disabled:opacity-60"
+                        >
+                          {analyzingLeadId === lead.id ? (
+                            <>
+                              <svg className="animate-spin h-3 w-3 text-white" viewBox="0 0 24 24" fill="none">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                              </svg>
+                              <span>Analyzing...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>⚡</span>
+                              <span>Run AI Analysis</span>
+                            </>
+                          )}
+                        </button>
+                      )}
                     </div>
                   </div>
 

@@ -87,6 +87,30 @@ export default function Home() {
     setLeads(recalibrated);
   };
 
+  const [analyzingLeadId, setAnalyzingLeadId] = useState<string | null>(null);
+
+  const handleAnalyzeLead = async (id: string) => {
+    setAnalyzingLeadId(id);
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leadId: id }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        await fetchData();
+      } else {
+        alert(data.error || 'Failed to analyze lead');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error triggering analysis');
+    } finally {
+      setAnalyzingLeadId(null);
+    }
+  };
+
   const handleViewMatchedLeadsFromProperty = (property: Property) => {
     setActiveTab('leads');
     setViewMode('priority_aligned');
@@ -319,6 +343,8 @@ export default function Home() {
                   selectedLeadId={selectedLeadId}
                   onSelectLeadForChat={handleSelectLeadForChat}
                   onOpenAddPropertyModal={() => setIsAddPropModalOpen(true)}
+                  onAnalyzeLead={handleAnalyzeLead}
+                  analyzingLeadId={analyzingLeadId}
                 />
               </div>
 
@@ -452,6 +478,30 @@ export default function Home() {
                               </p>
                             )}
                           </div>
+
+                          {/* Quick AI Analysis button if pending */}
+                          {lead.analysisStatus === 'pending' && (
+                            <button
+                              onClick={() => handleAnalyzeLead(lead.id)}
+                              disabled={analyzingLeadId === lead.id}
+                              className="w-full mt-2 py-1.5 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow-2xs disabled:opacity-60"
+                            >
+                              {analyzingLeadId === lead.id ? (
+                                <>
+                                  <svg className="animate-spin h-3.5 w-3.5 text-white" viewBox="0 0 24 24" fill="none">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                  </svg>
+                                  <span>Analyzing with AI...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <span>⚡</span>
+                                  <span>Run AI Analysis & Score</span>
+                                </>
+                              )}
+                            </button>
+                          )}
 
                           {/* Action Buttons */}
                           <div className="mt-3 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2">

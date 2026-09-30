@@ -61,6 +61,15 @@ export default function LeadForm() {
         if (!response.ok || !data.success) {
           throw new Error(data.error || 'Failed to save lead');
         }
+
+        // Automatically trigger AI analysis in the background
+        if (data.lead?.id) {
+          fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ leadId: data.lead.id }),
+          }).catch((err) => console.warn('Background AI analysis notice:', err));
+        }
         
         setIsSuccess(true);
       } catch (error) {
