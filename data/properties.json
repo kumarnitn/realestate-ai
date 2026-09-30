@@ -1,0 +1,142 @@
+[
+  {
+    "title": "nwkncdk",
+    "propertyType": "3 BHK Apartment",
+    "location": "bjkjksa",
+    "price": "886",
+    "numericPrice": 886,
+    "areaSqft": 2883,
+    "status": "Available",
+    "amenities": [
+      "djq"
+    ],
+    "description": "jnjk",
+    "floorNumber": "bdbqwjbhd",
+    "possessionStatus": "Ready to Move",
+    "id": "prop-1790756942330-lz5ud",
+    "createdAt": "2026-09-30T08:29:02.330Z",
+    "updatedAt": "2026-09-30T08:29:02.330Z"
+  },
+  {
+    "id": "prop-101",
+    "title": "Indiranagar Sky Villas - Penthouse 14A",
+    "propertyType": "4 BHK Penthouse",
+    "location": "Indiranagar, Bangalore",
+    "price": "₹4.5 Cr",
+    "numericPrice": 450,
+    "areaSqft": 3600,
+    "status": "Available",
+    "amenities": [
+      "Private Terrace Garden",
+      "3 Covered Car Parking",
+      "Italian Marble",
+      "100% East Facing",
+      "Infinity Pool"
+    ],
+    "description": "Ultra-luxury duplex penthouse overlooking the lush Indiranagar canopy. Direct private elevator access and double-height ceiling living lounge.",
+    "floorNumber": "14th & 15th Floor",
+    "possessionStatus": "Ready to Move",
+    "createdAt": "2026-09-28T10:00:00.000Z"
+  },
+  {
+    "id": "prop-102",
+    "title": "Prestige Boulevard - Tower C Unit 804",
+    "propertyType": "3 BHK Apartment",
+    "location": "Whitefield, Bangalore",
+    "price": "₹1.55 Cr",
+    "numericPrice": 155,
+    "areaSqft": 1720,
+    "status": "Available",
+    "amenities": [
+      "Gated Community",
+      "5 min to ITPL",
+      "Clubhouse & Gym",
+      "Vastu Compliant",
+      "EV Charging Point"
+    ],
+    "description": "Spacious 3 BHK in prime Whitefield tech corridor. High floor with panoramic green views, seamless connectivity to ITPL and upcoming metro.",
+    "floorNumber": "8th Floor",
+    "possessionStatus": "Ready to Move",
+    "createdAt": "2026-09-28T11:30:00.000Z"
+  },
+  {
+    "id": "prop-103",
+    "title": "Sobha Dream Acres - Phase 2 Tower 7",
+    "propertyType": "2 BHK Apartment",
+    "location": "Outer Ring Road / Bellandur, Bangalore",
+    "price": "₹1.05 Cr",
+    "numericPrice": 105,
+    "areaSqft": 1210,
+    "status": "Available",
+    "amenities": [
+      "High Rental Yield (5.8%)",
+      "Pre-rented Corporate Tenant Option",
+      "Olympic Swimming Pool",
+      "Tennis Courts"
+    ],
+    "description": "Top-tier investment flat strategically positioned near major IT SEZs (EcoSpace, Prestige Tech Park). Excellent rental demand and high occupancy rate.",
+    "floorNumber": "5th Floor",
+    "possessionStatus": "Ready to Move",
+    "createdAt": "2026-09-28T14:15:00.000Z"
+  },
+  {
+    "id": "prop-104",
+    "title": "Brigade Millennium Enclave - Palm Block",
+    "propertyType": "3 BHK Apartment",
+    "location": "Jayanagar / Banashankari, Bangalore",
+    "price": "₹2.1 Cr",
+    "numericPrice": 210,
+    "areaSqft": 1980,
+    "status": "Available",
+    "amenities": [
+      "Strictly East-Facing",
+      "100% Vastu Certified",
+      "Corner Unit with 3 Balconies",
+      "Elderly-Friendly Landscaping"
+    ],
+    "description": "Traditional luxury meets modern comfort in South Bangalore. Corner apartment with abundant natural daylight, cross ventilation, and serene temple proximity.",
+    "floorNumber": "4th Floor",
+    "possessionStatus": "Ready to Move",
+    "createdAt": "2026-09-29T09:00:00.000Z"
+  },
+  {
+    "id": "prop-105",
+    "title": "Concorde Tech Turf - Unit 402",
+    "propertyType": "2 BHK Apartment",
+    "location": "Electronic City Phase 1, Bangalore",
+    "price": "₹64 Lakhs",
+    "numericPrice": 64,
+    "areaSqft": 1020,
+    "status": "Available",
+    "amenities": [
+      "300m to Infosys Metro Station",
+      "Low Maintenance",
+      "Modern Modular Kitchen",
+      "Power Backup"
+    ],
+    "description": "Affordable modern 2 BHK directly adjacent to Electronic City Phase 1 tech parks and Yellow Line Metro station. Ready for immediate move-in.",
+    "floorNumber": "4th Floor",
+    "possessionStatus": "Ready to Move",
+    "createdAt": "2026-09-29T11:45:00.000Z"
+  },
+  {
+    "id": "prop-106",
+    "title": "UB Signature Business Tower - Suite 6B",
+    "propertyType": "Commercial Office Space",
+    "location": "MG Road / CBD, Bangalore",
+    "price": "₹3.2 Cr",
+    "numericPrice": 320,
+    "areaSqft": 2100,
+    "status": "Available",
+    "amenities": [
+      "Grade-A Commercial Certification",
+      "Central HVAC",
+      "100% DG Power Backup",
+      "Dedicated Valet Parking"
+    ],
+    "description": "Prime CBD commercial retail/office suite on MG Road. Ideal for multinational corporate branch, private wealth office, or premium retail showroom.",
+    "floorNumber": "6th Floor",
+    "possessionStatus": "Ready to Move",
+    "createdAt": "2026-09-29T15:20:00.000Z"
+  }
+]
