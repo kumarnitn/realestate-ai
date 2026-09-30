@@ -12,6 +12,7 @@ interface PriorityAlignedListProps {
   onOpenAddPropertyModal?: (prefill?: Partial<Property>) => void;
   onAnalyzeLead?: (id: string) => void;
   analyzingLeadId?: string | null;
+  onFinalizeLead?: (lead: Lead, property?: Property) => void;
 }
 
 export default function PriorityAlignedList({
@@ -22,6 +23,7 @@ export default function PriorityAlignedList({
   onOpenAddPropertyModal,
   onAnalyzeLead,
   analyzingLeadId,
+  onFinalizeLead,
 }: PriorityAlignedListProps) {
   const [priorityFilter, setPriorityFilter] = useState<'ALL' | 'HOT' | 'WARM' | 'COLD' | 'MATCHED_ONLY'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -280,6 +282,21 @@ export default function PriorityAlignedList({
                         Lead Details →
                       </Link>
 
+                      {onFinalizeLead && (
+                        <button
+                          onClick={() => {
+                            const fullProp = hasMatch && matchedProp
+                              ? properties.find((p) => p.id === (matchedProp as any).propertyId || p.id === matchedProp.id) || (matchedProp as unknown as Property)
+                              : undefined;
+                            onFinalizeLead(lead, fullProp);
+                          }}
+                          className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 transition flex items-center gap-1 shadow-2xs"
+                        >
+                          <span>🤝</span>
+                          <span>Finalize Deal</span>
+                        </button>
+                      )}
+
                       {lead.analysisStatus === 'pending' && onAnalyzeLead && (
                         <button
                           onClick={() => onAnalyzeLead(lead.id)}
@@ -343,8 +360,8 @@ export default function PriorityAlignedList({
                           </div>
                         </div>
 
-                        {/* Quick AI Pitch Action */}
-                        <div className="pt-2 border-t border-slate-100">
+                        {/* Quick AI Pitch Action and Finalize Deal */}
+                        <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
                           <button
                             onClick={() =>
                               onSelectLeadForChat(
@@ -357,6 +374,19 @@ export default function PriorityAlignedList({
                             <span>💬 Pitch this Apartment with AI</span>
                             <span>→</span>
                           </button>
+
+                          {onFinalizeLead && (
+                            <button
+                              onClick={() => {
+                                const fullProp = properties.find((p) => p.id === (matchedProp as any).propertyId || p.id === matchedProp.id) || (matchedProp as unknown as Property);
+                                onFinalizeLead(lead, fullProp);
+                              }}
+                              className="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-xs"
+                            >
+                              <span>🤝 Finalize & Log Matched Deal</span>
+                              <span>✓</span>
+                            </button>
+                          )}
                         </div>
                       </div>
                     ) : (
@@ -492,20 +522,36 @@ export default function PriorityAlignedList({
                         {lead.matchedProperty?.price || '—'}
                       </td>
                       <td className="p-3 text-right">
-                        <button
-                          onClick={() => {
-                            setShowMatrixModal(false);
-                            onSelectLeadForChat(
-                              lead.id,
-                              lead.matchedProperty
-                                ? `Draft a pitch for ${lead.name} featuring ${lead.matchedProperty.title}.`
-                                : `Draft a consultation response for ${lead.name}.`
-                            );
-                          }}
-                          className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-[11px] font-semibold transition"
-                        >
-                          Pitch AI
-                        </button>
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => {
+                              setShowMatrixModal(false);
+                              onSelectLeadForChat(
+                                lead.id,
+                                lead.matchedProperty
+                                  ? `Draft a pitch for ${lead.name} featuring ${lead.matchedProperty.title}.`
+                                  : `Draft a consultation response for ${lead.name}.`
+                              );
+                            }}
+                            className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-[11px] font-semibold transition"
+                          >
+                            Pitch AI
+                          </button>
+                          {onFinalizeLead && (
+                            <button
+                              onClick={() => {
+                                setShowMatrixModal(false);
+                                const prop = lead.matchedProperty
+                                  ? properties.find((p) => p.id === (lead.matchedProperty as any).propertyId || p.id === lead.matchedProperty?.id) || (lead.matchedProperty as unknown as Property)
+                                  : undefined;
+                                onFinalizeLead(lead, prop);
+                              }}
+                              className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[11px] font-bold transition"
+                            >
+                              Finalize
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}

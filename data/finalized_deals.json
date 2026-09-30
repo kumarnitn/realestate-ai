@@ -1,0 +1,33 @@
+[
+  {
+    "dealType": "LEAD_AND_PROPERTY",
+    "clientName": "Dr. Sameer Al-Mansoor (NRI)",
+    "propertyTitle": "UB Signature Business Tower - Suite 6B",
+    "agreedPrice": "₹3.2 Cr",
+    "tokenAdvance": "5 Lakhs",
+    "closingDate": "2026-09-30",
+    "agentNotes": "Finalized token advance received and keys handover scheduled",
+    "leadDetails": {
+      "id": "f476396e-3c17-4ae2-bdab-ea02b1ec2ef9",
+      "name": "Dr. Sameer Al-Mansoor (NRI)",
+      "location": "MG Road / CBD, Bangalore",
+      "budget": "₹3.2 Cr",
+      "propertyRequirement": "Commercial Office Space or Grade-A Retail Unit (1,500 - 2,500 sq ft)",
+      "buyingTimeline": "Within 1 month",
+      "priority": "HOT",
+      "score": 100,
+      "customerMessage": "NRI based in Dubai visiting Bangalore next week from Oct 5-12. Looking to acquire pre-leased commercial office space with minimum 7.5% ROI. Funds ready in NRE account. Need appointments booked in advance."
+    },
+    "propertyDetails": {
+      "id": "prop-106",
+      "title": "UB Signature Business Tower - Suite 6B",
+      "location": "MG Road / CBD, Bangalore",
+      "price": "₹3.2 Cr",
+      "propertyType": "Commercial Office Space",
+      "areaSqft": 2100,
+      "floorNumber": "6th Floor"
+    },
+    "id": "deal-1790761223533-m988c",
+    "finalizedAt": "2026-09-30T09:40:23.535Z"
+  }
+]

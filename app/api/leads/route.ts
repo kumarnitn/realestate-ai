@@ -149,3 +149,37 @@ export async function GET() {
     );
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: 'Missing lead id' },
+        { status: 400 }
+      );
+    }
+
+    const { error } = await supabase.from('leads').delete().eq('id', id);
+    if (error) {
+      console.error('Error deleting lead:', error);
+      return NextResponse.json(
+        { success: false, error: 'Failed to delete lead from database' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: true, message: 'Lead deleted successfully' },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('DELETE /api/leads error:', error);
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}

@@ -50,6 +50,13 @@ RealEstate AI addresses the primary bottlenecks in real estate sales: manual lea
    - **Focused Lead Context**: Analyzes requirements, detects objections, and crafts consultative site-visit invitations for a selected buyer.
    - **Full Pipeline Context**: Answers questions across the entire sales funnel (e.g., *"Which buyers should I contact first this morning?"* or *"What 3 BHK units are available in Whitefield?"*).
 
+6. **🤝 Deal Finalization, Transaction Logging & Active Pipeline Removal**:
+   - Finalizes deals for **Lead + Apartment**, **Lead Only**, or **Apartment Only**.
+   - Prompts for closing details: **Agreed Closing Price**, **Token / Advance Received**, **Closing Date**, and **Agent Closing Remarks**.
+   - Persists a complete transaction snapshot into an audit log (`finalized_deals` table / `data/finalized_deals.json`).
+   - Automatically removes finalized leads from active leads and sold flats from active inventory, ensuring the live pipeline remains clean and focused.
+   - A dedicated **🤝 Finalized Deals Log** tab with KPI summary (deals won, sales volume, token advances), full-text search, and deal type filtering.
+
 ---
 
 ## 🏛️ Architecture Overview
@@ -63,12 +70,14 @@ flowchart TD
         LeadTab["📋 Inbound Leads Pipeline"]
         PriorityView["⚡ Priority Aligned View"]
         InventoryTab["🏢 Property Inventory View"]
-        ChatCopilot["🤖 AI Sales Assistant Copilot"]
+        DealsLogTab["🤝 Finalized Deals Log"]
+        ChatCopilot["💬 AI Sales Copilot"]
     end
 
     subgraph API ["Next.js API Layer"]
         RouteLeads["/api/leads"]
         RouteProps["/api/properties"]
+        RouteDeals["/api/deals"]
         RouteAnalyze["/api/analyze"]
         RouteChat["/api/chat"]
     end

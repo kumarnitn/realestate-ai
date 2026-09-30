@@ -118,25 +118,5 @@
     "floorNumber": "4th Floor",
     "possessionStatus": "Ready to Move",
     "createdAt": "2026-09-29T11:45:00.000Z"
-  },
-  {
-    "id": "prop-106",
-    "title": "UB Signature Business Tower - Suite 6B",
-    "propertyType": "Commercial Office Space",
-    "location": "MG Road / CBD, Bangalore",
-    "price": "₹3.2 Cr",
-    "numericPrice": 320,
-    "areaSqft": 2100,
-    "status": "Available",
-    "amenities": [
-      "Grade-A Commercial Certification",
-      "Central HVAC",
-      "100% DG Power Backup",
-      "Dedicated Valet Parking"
-    ],
-    "description": "Prime CBD commercial retail/office suite on MG Road. Ideal for multinational corporate branch, private wealth office, or premium retail showroom.",
-    "floorNumber": "6th Floor",
-    "possessionStatus": "Ready to Move",
-    "createdAt": "2026-09-29T15:20:00.000Z"
   }
 ]

@@ -3,18 +3,22 @@ import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { Lead } from '@/types/lead';
 import { Property } from '@/types/property';
+import { FinalizedDeal } from '@/types/deal';
 import LeadChat from '@/components/leads/LeadChat';
 import PropertyList from '@/components/properties/PropertyList';
 import PriorityAlignedList from '@/components/leads/PriorityAlignedList';
 import AddPropertyModal from '@/components/properties/AddPropertyModal';
+import FinalizeDealModal from '@/components/deals/FinalizeDealModal';
+import FinalizedDealsLog from '@/components/deals/FinalizedDealsLog';
 import { applyInventoryCalibration } from '@/lib/scoring';
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'leads' | 'inventory'>('leads');
+  const [activeTab, setActiveTab] = useState<'leads' | 'inventory' | 'deals'>('leads');
   const [viewMode, setViewMode] = useState<'grid' | 'priority_aligned'>('grid');
 
   const [leads, setLeads] = useState<Lead[]>([]);
   const [properties, setProperties] = useState<Property[]>([]);
+  const [finalizedDeals, setFinalizedDeals] = useState<FinalizedDeal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,6 +28,11 @@ export default function Home() {
   // Add property modal control from leads view
   const [isAddPropModalOpen, setIsAddPropModalOpen] = useState(false);
 
+  // Finalize Deal modal control
+  const [isFinalizeModalOpen, setIsFinalizeModalOpen] = useState(false);
+  const [dealPrefillLead, setDealPrefillLead] = useState<Lead | null>(null);
+  const [dealPrefillProperty, setDealPrefillProperty] = useState<Property | null>(null);
+
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const fetchData = async () => {
@@ -31,14 +40,16 @@ export default function Home() {
       setIsLoading(true);
       setError(null);
 
-      const [leadsRes, propsRes] = await Promise.all([
+      const [leadsRes, propsRes, dealsRes] = await Promise.all([
         fetch('/api/leads'),
         fetch('/api/properties'),
+        fetch('/api/deals'),
       ]);
 
-      const [leadsData, propsData] = await Promise.all([
+      const [leadsData, propsData, dealsData] = await Promise.all([
         leadsRes.json(),
         propsRes.json(),
+        dealsRes.json(),
       ]);
 
       if (!leadsRes.ok || !leadsData.success) {
@@ -47,6 +58,9 @@ export default function Home() {
 
       const fetchedProps: Property[] = propsData.success ? propsData.properties || [] : [];
       setProperties(fetchedProps);
+
+      const fetchedDeals: FinalizedDeal[] = dealsData.success ? dealsData.deals || [] : [];
+      setFinalizedDeals(fetchedDeals);
 
       // Calibrate leads with fetched properties
       const fetchedLeads: Lead[] = leadsData.leads || [];
@@ -114,6 +128,49 @@ export default function Home() {
   const handleViewMatchedLeadsFromProperty = (property: Property) => {
     setActiveTab('leads');
     setViewMode('priority_aligned');
+  };
+
+  const handleOpenFinalizeModal = (lead?: Lead | null, property?: Property | null) => {
+    setDealPrefillLead(lead || null);
+    setDealPrefillProperty(property || null);
+    setIsFinalizeModalOpen(true);
+  };
+
+  const handleDealFinalized = (deal: FinalizedDeal) => {
+    // 1. Prepend to finalized deals log
+    setFinalizedDeals((prev) => [deal, ...prev]);
+
+    const targetLeadId = deal.leadId || deal.leadDetails?.id;
+    const targetPropertyId = deal.propertyId || deal.propertyDetails?.id;
+
+    // 2. Remove finalized lead from active pipeline if applicable
+    let updatedLeads = leads;
+    if (targetLeadId) {
+      updatedLeads = leads.filter((l) => l.id !== targetLeadId);
+    }
+
+    // 3. Remove/update property if applicable
+    let updatedProps = properties;
+    if (targetPropertyId) {
+      updatedProps = properties.filter((p) => p.id !== targetPropertyId);
+      setProperties(updatedProps);
+    }
+
+    // 4. Recalibrate remaining leads with updated inventory
+    const recalibrated = applyInventoryCalibration(updatedLeads, updatedProps);
+    setLeads(recalibrated);
+
+    // 5. Clear chat selection if finalized
+    if (targetLeadId && selectedLeadId === targetLeadId) {
+      setSelectedLeadId(null);
+    }
+
+    // 6. Switch to deals log tab
+    setActiveTab('deals');
+  };
+
+  const handleDealDeleted = (dealId: string) => {
+    setFinalizedDeals((prev) => prev.filter((d) => d.id !== dealId));
   };
 
   // Stats calculation
@@ -193,7 +250,7 @@ export default function Home() {
                 : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
             }`}
           >
-            <span>🏢 Property Inventory (Flats & Apartments)</span>
+            <span>🏢 Property Inventory</span>
             <span
               className={`text-xs px-2 py-0.5 rounded-full font-extrabold ${
                 activeTab === 'inventory'
@@ -204,7 +261,28 @@ export default function Home() {
               {properties.length}
             </span>
             <span className="hidden sm:inline-flex text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">
-              {availablePropsCount} Available
+              {availablePropsCount} Avail
+            </span>
+          </button>
+
+          {/* Tab 3: Finalized Deals Log */}
+          <button
+            onClick={() => setActiveTab('deals')}
+            className={`pb-3.5 px-4 text-sm font-bold border-b-2 flex items-center gap-2 transition ${
+              activeTab === 'deals'
+                ? 'border-emerald-600 text-emerald-600'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
+            }`}
+          >
+            <span>🤝 Finalized Deals Log</span>
+            <span
+              className={`text-xs px-2 py-0.5 rounded-full font-extrabold ${
+                activeTab === 'deals'
+                  ? 'bg-emerald-100 text-emerald-700'
+                  : 'bg-slate-100 text-slate-600'
+              }`}
+            >
+              {finalizedDeals.length}
             </span>
           </button>
         </div>
@@ -269,6 +347,16 @@ export default function Home() {
           onPropertyAdded={handlePropertyAdded}
           onPropertyDeleted={handlePropertyDeleted}
           onViewMatchedLeads={handleViewMatchedLeadsFromProperty}
+          onFinalizeProperty={(prop) => handleOpenFinalizeModal(null, prop)}
+        />
+      ) : activeTab === 'deals' ? (
+        /* =========================================================================
+           TAB 3: FINALIZED DEALS LOG
+           ========================================================================= */
+        <FinalizedDealsLog
+          deals={finalizedDeals}
+          onDealDeleted={handleDealDeleted}
+          onOpenFinalizeModal={() => handleOpenFinalizeModal(null, null)}
         />
       ) : (
         /* =========================================================================
@@ -345,6 +433,7 @@ export default function Home() {
                   onOpenAddPropertyModal={() => setIsAddPropModalOpen(true)}
                   onAnalyzeLead={handleAnalyzeLead}
                   analyzingLeadId={analyzingLeadId}
+                  onFinalizeLead={handleOpenFinalizeModal}
                 />
               </div>
 
@@ -504,23 +593,37 @@ export default function Home() {
                           )}
 
                           {/* Action Buttons */}
-                          <div className="mt-3 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2">
-                            <Link
-                              href={`/leads/${lead.id}`}
-                              className="text-center rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-200 transition"
-                            >
-                              View Details
-                            </Link>
+                          <div className="mt-3 pt-3 border-t border-slate-100 flex flex-col gap-2">
+                            <div className="grid grid-cols-2 gap-2">
+                              <Link
+                                href={`/leads/${lead.id}`}
+                                className="text-center rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-200 transition"
+                              >
+                                View Details
+                              </Link>
+                              <button
+                                onClick={() => handleSelectLeadForChat(lead.id)}
+                                className={`text-center rounded-lg px-3 py-1.5 text-xs font-semibold transition flex items-center justify-center gap-1 ${
+                                  isSelected
+                                    ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                                    : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200'
+                                }`}
+                              >
+                                <span>💬</span>
+                                <span>{isSelected ? 'Chatting' : 'Chat with AI'}</span>
+                              </button>
+                            </div>
+
                             <button
-                              onClick={() => handleSelectLeadForChat(lead.id)}
-                              className={`text-center rounded-lg px-3 py-1.5 text-xs font-semibold transition flex items-center justify-center gap-1 ${
-                                isSelected
-                                  ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                                  : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200'
-                              }`}
+                              onClick={() => {
+                                const matchedP = lead.matchedProperty
+                                  ? properties.find((p) => p.id === (lead.matchedProperty as any).propertyId || p.id === lead.matchedProperty?.id) || (lead.matchedProperty as unknown as Property)
+                                  : null;
+                                handleOpenFinalizeModal(lead, matchedP);
+                              }}
+                              className="w-full text-center rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 px-3 py-1.5 text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-2xs"
                             >
-                              <span>💬</span>
-                              <span>{isSelected ? 'Chatting' : 'Chat with AI'}</span>
+                              <span>🤝 Finalize Deal & Log Details</span>
                             </button>
                           </div>
                         </div>
@@ -550,6 +653,17 @@ export default function Home() {
         isOpen={isAddPropModalOpen}
         onClose={() => setIsAddPropModalOpen(false)}
         onPropertyAdded={handlePropertyAdded}
+      />
+
+      {/* Finalize Deal Modal */}
+      <FinalizeDealModal
+        isOpen={isFinalizeModalOpen}
+        onClose={() => setIsFinalizeModalOpen(false)}
+        initialLead={dealPrefillLead}
+        initialProperty={dealPrefillProperty}
+        allLeads={leads}
+        allProperties={properties}
+        onDealFinalized={handleDealFinalized}
       />
     </div>
   );

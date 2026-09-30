@@ -10,6 +10,7 @@ interface PropertyListProps {
   onPropertyAdded: (newProp: Property) => void;
   onPropertyDeleted: (id: string) => void;
   onViewMatchedLeads?: (property: Property) => void;
+  onFinalizeProperty?: (property: Property) => void;
 }
 
 export default function PropertyList({
@@ -18,6 +19,7 @@ export default function PropertyList({
   onPropertyAdded,
   onPropertyDeleted,
   onViewMatchedLeads,
+  onFinalizeProperty,
 }: PropertyListProps) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -301,10 +303,21 @@ export default function PropertyList({
                       onClick={() => onViewMatchedLeads && onViewMatchedLeads(prop)}
                       className="flex-1 py-1.5 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition text-center shadow-xs flex items-center justify-center gap-1"
                     >
-                      <span>⚡ View {matchedLeads.length} Matched Leads</span>
+                      <span>⚡ View {matchedLeads.length} Leads</span>
                     </button>
                   ) : (
                     <span className="text-xs text-slate-400 italic">No buyers yet</span>
+                  )}
+
+                  {onFinalizeProperty && (
+                    <button
+                      onClick={() => onFinalizeProperty(prop)}
+                      className="py-1.5 px-3 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold transition flex items-center gap-1 shadow-2xs"
+                      title="Finalize sale & log closing details"
+                    >
+                      <span>🤝</span>
+                      <span>Finalize / Sold</span>
+                    </button>
                   )}
 
                   <button
